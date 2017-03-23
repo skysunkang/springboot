@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 /**
  * Created by changxiang on 2017-03-17.
+ * spring scurity 的配置类
  */
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{

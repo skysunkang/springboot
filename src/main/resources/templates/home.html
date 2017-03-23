@@ -1,0 +1,30 @@
+<html  xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}"/>
+    <script th:src="@{js/jquery-1.4.4.min.js}"></script>
+    <script th:src="@{js/bootstrap.min.js}"></script>
+    <script th:inline="javascript">
+    </script>
+</head>
+<!--有了这个就可以直接写[[${menu}]]和在js里面一样-->
+<body th:inline="text">
+用户名：<span th:text="${username}" />
+<br/>
+
+我就是首页，首页就是我
+<!--sec:authorize-url="/testMybatis" 用于对该url显示-->
+<div  sec:authorize="hasRole('ROLE_ADMIN')"  >
+    我是ROLE_ADMIN的权限
+</div>
+<div sec:authorize="hasRole('ROLE_USER')">
+
+    我是普通用户的权限
+</div>
+
+<a th:href="@{/login}" >注销登录</a>[[${menu}]]
+</body>
+</html>

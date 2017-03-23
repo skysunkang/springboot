@@ -1,0 +1,35 @@
+<html  xmlns:th="http://www.thymeleaf.org"
+       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+
+    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}"/>
+    <script th:src="@{js/jquery.min.js}"></script>
+    <script th:src="@{js/jquery-1.4.4.min.js}"></script>
+    <script th:inline="javascript">
+        $(function (){
+            console.log([[${persons.content}]]);
+        });
+    </script>
+</head>
+<body>
+    <table class="table table-striped" >
+        <tr>
+            <th>姓名</th>
+            <th>年齡</th>
+            <th>地址</th>
+        </tr>
+        <tr th:each="person:${persons.content}">
+            <td th:text="${person.name}"></td>
+            <td th:text="${person.age}"></td>
+            <td th:text="${person.address}"></td>
+        </tr>
+    </table>
+    <ul class="pagination">
+        <li><a th:href="'test?page='+(${persons.number}-1)+''">&laquo;</a></li>
+        <li><a href="#"><span th:text="${persons.number}"/> </a></li>
+        <li><a th:href="'test?page='+(${persons.number}+1)+''">&raquo;</a></li>
+    </ul>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunkang.dao.PersonRepository">
+    <resultMap id="person_result" type="com.sunkang.entity.Person">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="age" property="age" jdbcType="INTEGER" />
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="person_column_list" >
+        id,name,age,address
+    </sql>
+    <!--查询所有的person-->
+    <select id="selectPersonAll" resultMap="person_result" >
+        SELECT
+          <include refid="person_column_list"/>
+        FROM  person
+
+    </select>
+
+    <!--根据id查询person-->
+    <select id="selectPersonById" parameterType="String" resultMap="person_result" >
+        SELECT
+          <include refid="person_column_list"/>
+        FROM PERSON
+        <where>
+            /*一个参数的话直接用vaue去拿*/
+            <if test="value != null and value != ''">
+                id=#{value }
+            </if>
+        </where>
+
+    </select>
+    <!--根据姓名和地址查询person-->
+    <select id="selectPersonByNameAndAddress" parameterType="com.sunkang.entity.Person" resultMap="person_result">
+        SELECT
+          <include refid="person_column_list" />
+        FROM person
+          /*相当于替换，讲前缀替换成where，讲后缀and替换成''*/
+          <trim prefix="where" suffixOverrides="and">
+              <if test="name != null and name != ''" >
+                  name = #{name,jdbcType =VARCHAR} and
+              </if>
+              <if test="address != null and address != ''">
+                  address = #{address,jdbcType =VARCHAR} and
+              </if>
+          </trim>
+    </select>
+
+    <!--新增一个person-->
+    <insert id="insertPerson" parameterType="com.sunkang.entity.Person" >
+        <selectKey keyProperty="id" resultType="String" order="BEFORE">
+            /*生成的uuid为36位字符串，其中32个为字符，4个为分隔符，分隔符位置一样所以没什么用*/
+            select replace(uuid(),'-','') from dual
+        </selectKey>
+        insert into
+          person(id,name,age,address)
+          VALUES (#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{age,jdbcType=INTEGER},#{address,jdbcType=VARCHAR})
+    </insert>
+
+    <!--根据id删除一个person-->
+    <delete id="deletePersonById" parameterType="String" >
+        delete from  Person
+          <where>
+              id=#{value}
+          </where>
+    </delete>
+
+    <!--根据id更新一个person-->
+    <update id="updatePersonById" parameterType="com.sunkang.entity.Person" >
+        update Person
+        <set>
+            <trim suffixOverrides=",">
+                <if test="name !=null and name != ''">
+                    name=#{name,jdbcType=VARCHAR},
+                </if>
+                <if test="age != null">
+                    age=#{age,jdbcType=INTEGER},
+                </if>
+                <if test="address != null and address != ''">
+                    address =#{address,jdbcType=VARCHAR},
+                </if>
+            </trim>
+        </set>
+        <where>
+            id = #{id ,jdbcType=VARCHAR}
+        </where>
+    </update>
+
+    <!--根据id更新person的id-->
+   <update id="updatePersonId" parameterType="java.util.HashMap" >
+       update person set id= #{newId,jdbcType=VARCHAR} where id=#{oldId,jdbcType=VARCHAR}
+   </update>
+
+</mapper>

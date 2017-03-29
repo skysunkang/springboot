@@ -2,9 +2,12 @@ package com.sunkang.controller;
 
 import com.sunkang.dao.PersonRedisRepository;
 import com.sunkang.entity.Person;
+import com.sunkang.jms.Producer;
 import com.sunkang.service.PersonJPAService;
 import com.sunkang.service.PersonService;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.jms.Destination;
 import java.util.List;
 
 /**
@@ -28,6 +32,20 @@ public class TestContrller {
 
     @Autowired
     private PersonService personService;
+
+    @Autowired
+    private Producer producer;
+
+    /**
+     * 测试spring-jpa的操作
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/testJpa")
+    public String testJpa(){
+        personJPAService.selectByAddress1();
+        return "hahahahha";
+    }
 
     /**
      * 测试spring-jpa的操作
@@ -59,7 +77,6 @@ public class TestContrller {
         personJPAService.testNoRollback();
         return modelAndView;
     }
-
     /**
      * 测试spring的缓存
      * @return
@@ -115,5 +132,24 @@ public class TestContrller {
         ModelAndView modelAndView=new ModelAndView("test");
         return modelAndView;
     }
+
+    /**
+     * 测试testJms的操作
+     * @return
+     */
+    @RequestMapping("/testJms")
+    public ModelAndView testJms(){
+        Destination destination = new ActiveMQQueue("mytest.queue");
+
+        for(int i=0; i<10; i++){
+            producer.sendMessage(destination, "myname is sunkang!!!");
+        }
+        ModelAndView modelAndView=new ModelAndView("test");
+
+        return modelAndView;
+    }
+
+
+
 
 }

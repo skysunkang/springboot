@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by changxiang on 2017-03-02.
  *
@@ -24,6 +26,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class PersonJPAService {
     @Autowired
     private PersonJPARepository personRepository;
+
+    public void selectByAddress1(){
+       List<Person> persons= personRepository.selectByAddress1("武汉");
+       for(Person person:persons){
+           System.out.println(person.toString());
+       }
+    }
+
 
     public Page<Person> findPersionList(Integer page,Integer pageSize)  {
         try {

@@ -14,6 +14,7 @@ import java.util.List;
  * 用户的数据访问类
  */
 @Mapper
+@Repository
 public interface UserRepository {
     /**
      * 通过用户名获取用户
